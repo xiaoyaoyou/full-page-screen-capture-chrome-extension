@@ -24,7 +24,9 @@
     "unlimitedStorage",
     "tabs",
     "http://*/",
-    "https://*/"
+    "https://*/",
+    "<all_urls>",
+    "downloads"
   ],
   "icons": {
     "16": "icon16-999.png",

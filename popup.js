@@ -71,12 +71,28 @@ function _displayCapture(filenames, index) {
             resultWindowId = win.id;
         });
     } else {
+        let theImgFileName = filename;
         chrome.tabs.create({
             url: filename,
-            active: last,
+            //active: last,
+            active: false,
             windowId: resultWindowId,
             openerTabId: currentTab.id,
             index: (currentTab.incognito ? 0 : currentTab.index) + 1 + index
+        }, function() {
+            if(last) {
+                chrome.downloads.download({url: theImgFileName, filename: 'metrics-biz-img\\' + Date.now() + '.png', conflictAction: 'overwrite'}, function(downloadId){
+                    console.log(currentTab.url + ' capture finished, the filename is ' + filename);
+
+                    //chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    //    chrome.tabs.update(tabs[0].id, {active: true, url: 'http://www.hollischuang.com/archives/1003'}, function(newTab) {
+                    //        setTimeout(function() {
+                    //            doTabCapture();
+                    //        }, 10000);
+                    //    });
+                    //});
+                });
+            }
         });
     }
 
@@ -111,65 +127,34 @@ function splitnotifier() {
 // start doing stuff immediately! - including error cases
 //
 
-chrome.tabs.query({active: false, currentWindow: true}, function(tabs) {
-    var tab = tabs[tabs.length - 1];
-    currentTab = tab; // used in later calls to get tab info
+//chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+//    var tab = tabs[0];
+//    currentTab = tab; // used in later calls to get tab info
+//
+//    var filename = getFilename(tab.url);
+//
+//    CaptureAPI.captureToFiles(tab, filename, displayCaptures,
+//        errorHandler, progress, splitnotifier);
+//});
 
-    console.log(tabs);
+var doTabCapture = function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        var tab = tabs[0];
+        currentTab = tab; // used in later calls to get tab info
 
-    var filename = getFilename(tab.url);
+        var filename = getFilename(tab.url);
 
-    setTimeout(function() {
         CaptureAPI.captureToFiles(tab, filename, displayCaptures,
             errorHandler, progress, splitnotifier);
-    }, 15000);
+    });
+}
 
+chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.update(tabs[0].id, {active: true, url: 'http://www.hollischuang.com/archives/1132'}, function(newTab) {
+        setTimeout(function() {
+            doTabCapture();
+        }, 10000);
+    });
 });
 
-//chrome.tabs.create(
-//    {
-//        url:'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-wei-xin?refresh=5s&orgId=11&from=1531065600000&to=1531670399000',
-//        //url: 'http://www.baidu.com',
-//        active: false
-//    },
-//    function(newTab) {
-//        setTimeout(function() {
-//            var tab = newTab;
-//            currentTab = tab;
-//            console.log(newTab);
-//
-//            var filename = getFilename(tab.url);
-//
-//            CaptureAPI.captureToFiles(tab, filename, displayCaptures,
-//                errorHandler, progress, splitnotifier);
-//        }, 10000);
-//
-//
-//        //chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//        //    //var tab = tabs[0];
-//        //    //currentTab = tab; // used in later calls to get tab info
-//        //
-//        //    var tab = newTab;
-//        //    currentTab = tab;
-//        //    console.log(newTab);
-//        //
-//        //    var filename = getFilename(tab.url);
-//        //
-//        //    CaptureAPI.captureToFiles(tab, filename, displayCaptures,
-//        //        errorHandler, progress, splitnotifier);
-//        //});
-//    }
-//);
-
-//setTimeout(function() {
-//    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-//        var tab = tabs[0];
-//        currentTab = tab; // used in later calls to get tab info
-//
-//        var filename = getFilename(tab.url);
-//
-//        CaptureAPI.captureToFiles(tab, filename, displayCaptures,
-//            errorHandler, progress, splitnotifier);
-//    })
-//}, 1000);
 

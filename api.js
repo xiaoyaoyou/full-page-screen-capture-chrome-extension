@@ -61,6 +61,7 @@ window.CaptureAPI = (function() {
                             data.totalHeight *= scale;
                         }
 
+                        console.log('in capture screenshots is ' + JSON.stringify(screenshots));
                         // lazy initialization of screenshot canvases (since we need to wait
                         // for actual image size)
                         if (!screenshots.length) {
@@ -68,6 +69,7 @@ window.CaptureAPI = (function() {
                                 screenshots,
                                 _initScreenshots(data.totalWidth, data.totalHeight)
                             );
+                            console.log('in capture now screenshots is ' + JSON.stringify(screenshots));
                             if (screenshots.length > 1) {
                                 if (splitnotifier) {
                                     splitnotifier();
@@ -269,7 +271,10 @@ window.CaptureAPI = (function() {
                 progress(0);
 
                 initiateCapture(tab, function() {
-                    callback(getBlobs(screenshots));
+                    console.log("screenshots is " + JSON.stringify(screenshots));
+                    setTimeout(function() {
+                        callback(getBlobs(screenshots));
+                    }, 1000);
                 });
             }
         });
