@@ -114,6 +114,7 @@ function _displayCapture(filenames, index) {
                     metricReport += '图片路径: ' + theImgFileName + '\n';
                     itemProcessIndex ++;
                     metricReport += '\n';
+                    progress(itemProcessIndex / skeleton.length);
                     metricItemProcessGo();
                 });
             }
@@ -169,7 +170,7 @@ var doTabCapture = function() {
         var filename = getFilename(tab.url);
 
         CaptureAPI.captureToFiles(tab, filename, displayCaptures,
-            errorHandler, progress, splitnotifier);
+            errorHandler, null, splitnotifier);
     });
 };
 
