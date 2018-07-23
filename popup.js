@@ -9,7 +9,34 @@
 var currentTab, // result of chrome.tabs.query of current active tab
     resultWindowId; // window id for putting resulting images
 
+var MetricReportItem = {
+    level: 1,
+    title: '',
+    url: '',
 
+    createNew: function(level, title, url) {
+        var obj = {};
+        obj.level = level;
+        obj.title = title;
+        obj.url = url;
+
+        return obj;
+    }
+};
+
+const ITEM_LEVEL_FIRST = 1;
+const ITEM_LEVEL_SECOND = 2;
+
+var skeleton = [
+    MetricReportItem.createNew(1, '总结', ''),
+    MetricReportItem.createNew(1, '业务metrics', ''),
+    MetricReportItem.createNew(2, '微信', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-wei-xin?from=1531670400000&orgId=11&refresh=5s&to=1532275199999'),
+    MetricReportItem.createNew(2, '短信', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-duan-xin?orgId=11&from=1531670400000&to=1532275199999')
+];
+
+var itemProcessIndex = 0;
+
+var metricReport = '';
 //
 // Utility methods
 //
@@ -84,13 +111,10 @@ function _displayCapture(filenames, index) {
                 chrome.downloads.download({url: theImgFileName, filename: 'metrics-biz-img\\' + Date.now() + '.png', conflictAction: 'overwrite'}, function(downloadId){
                     console.log(currentTab.url + ' capture finished, the filename is ' + filename);
 
-                    //chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    //    chrome.tabs.update(tabs[0].id, {active: true, url: 'http://www.hollischuang.com/archives/1003'}, function(newTab) {
-                    //        setTimeout(function() {
-                    //            doTabCapture();
-                    //        }, 10000);
-                    //    });
-                    //});
+                    metricReport += '图片路径: ' + theImgFileName + '\n';
+                    itemProcessIndex ++;
+                    metricReport += '\n';
+                    metricItemProcessGo();
                 });
             }
         });
@@ -147,14 +171,40 @@ var doTabCapture = function() {
         CaptureAPI.captureToFiles(tab, filename, displayCaptures,
             errorHandler, progress, splitnotifier);
     });
-}
+};
 
-chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.update(tabs[0].id, {active: true, url: 'http://www.hollischuang.com/archives/1132'}, function(newTab) {
-        setTimeout(function() {
-            doTabCapture();
-        }, 10000);
+var doMetricItemProcess = function(metricReportItem) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.update(tabs[0].id, {active: true, url: metricReportItem.url}, function(newTab) {
+            setTimeout(function() {
+                doTabCapture();
+            }, 20000);
+        });
     });
-});
+};
+
+var metricItemProcessGo = function() {
+    while (itemProcessIndex < skeleton.length) {
+        let theItem = skeleton[itemProcessIndex];
+        metricReport += theItem.title + (theItem.level === ITEM_LEVEL_FIRST ? '\n' : '');
+        if(theItem.url) {
+            metricReport += '(' + theItem.url + ')' + '\n';
+            doMetricItemProcess(theItem);
+            break;
+        }else {
+            itemProcessIndex++;
+            metricReport += '\n';
+        }
+    }
+
+    if(itemProcessIndex >= skeleton.length) {
+        show('metric-container');
+        $('metric-result').value = metricReport;
+        console.log('metricReport is ' + metricReport);
+    }
+};
+
+metricItemProcessGo();
+
 
 

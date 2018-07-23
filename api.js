@@ -231,7 +231,7 @@ window.CaptureAPI = (function() {
     function captureToBlobs(tab, callback, errback, progress, splitnotifier) {
         var loaded = false,
             screenshots = [],
-            timeout = 3000,
+            timeout = 6000,
             timedOut = false,
             noop = function() {};
 
