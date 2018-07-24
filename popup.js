@@ -35,7 +35,6 @@ var skeleton = [
 ];
 
 var itemProcessIndex = 0;
-
 var metricReport = '';
 //
 // Utility methods
@@ -205,7 +204,16 @@ var metricItemProcessGo = function() {
     }
 };
 
-metricItemProcessGo();
+chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCaptureConfig'], function(data) {
+    console.log('data is ' + JSON.stringify(data));
+    if(data.metricCaptureConfig) {
+        skeleton = data.metricCaptureConfig;
+    }
+
+    metricItemProcessGo();
+});
+
+
 
 
 
