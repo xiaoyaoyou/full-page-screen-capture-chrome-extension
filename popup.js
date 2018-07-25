@@ -268,7 +268,6 @@ var showProcessTip = function(tip) {
 };
 
 chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCaptureConfig', 'metricPageLoadingTime'], function(data) {
-    console.log('now data is ' + JSON.stringify(data));
     defaultMetricFrom = data.metricBeginTimestamp ? data.metricBeginTimestamp : defaultMetricFrom;
     defaultMetricTo = data.metricEndTimestamp ? data.metricEndTimestamp : defaultMetricTo;
     defaultPageLoadingTime = data.metricPageLoadingTime ? data.metricPageLoadingTime : defaultPageLoadingTime;
@@ -276,8 +275,6 @@ chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCa
         defaultPageLoadingTime = 5000;
     }
     currMetricReportCfg = data.metricCaptureConfig ? JSON.parse(data.metricCaptureConfig) : data.metricCaptureConfig;
-
-    console.log('now defaultPageLoadingTime is ' + defaultPageLoadingTime);
 
     metricCfgProcess();
     metricItemProcessGo();
