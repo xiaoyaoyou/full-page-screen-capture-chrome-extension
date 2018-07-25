@@ -63,8 +63,9 @@ var itemProcessIndex = 0;
 var metricReport = '';
 var fromRegExp = new RegExp(/from=[^&]+/, 'i');
 var toRegExp = new RegExp(/to=[^&]+/, 'i');
-var currMetricFrom = 'now-7d';
-var currMetricTo = 'now';
+var defaultMetricFrom = 'now-7d';
+var defaultMetricTo = 'now';
+var defaultPageLoadingTime = 30000;
 //
 // Utility methods
 //
@@ -72,7 +73,6 @@ var currMetricTo = 'now';
 function $(id) { return document.getElementById(id); }
 function show(id) { $(id).style.display = 'block'; }
 function hide(id) { $(id).style.display = 'none'; }
-
 
 function getFilename(contentURL) {
     var name = contentURL.split('?')[0].split('#')[0];
@@ -141,7 +141,7 @@ function _displayCapture(filenames, index) {
                         chrome.tabs.remove(theTab.id, function() {
                             console.log('remove tab , tab id is ' + theTab.id);
                         });
-                    }, 5000);
+                    }, defaultPageLoadingTime <= 5000 ? (defaultPageLoadingTime - 2000) : 5000);
 
                     metricReport += '图片路径: ' + theImgFileName + '\n';
                     itemProcessIndex ++;
@@ -211,8 +211,8 @@ var doMetricItemProcess = function(metricReportItem) {
         chrome.tabs.update(tabs[0].id, {active: true, url: metricReportItem.url}, function(newTab) {
             setTimeout(function() {
                 doTabCapture();
-            }, 20000);
-            showProcessTip('等待 ' + metricReportItem.url + ' 完成加载');
+            }, defaultPageLoadingTime);
+            showProcessTip('waiting the page of ' + metricReportItem.url + ' loading, it should consume ' + defaultPageLoadingTime / 1000 + 'S');
         });
     });
 };
@@ -239,12 +239,27 @@ var metricItemProcessGo = function() {
     }
 };
 
-var metricUrlProcess = function() {
+var metricCfgProcess= function() {
     currMetricReportCfg.forEach(function(i) {
-        if(i && i.url) {
-            i.url = i.url.replace(fromRegExp, 'from=' + currMetricFrom).replace(toRegExp, 'to=' + currMetricTo);
+        if(i) {
+            metricTitleProcess(i);
+            metricUrlProcess(i);
         }
     })
+};
+
+var metricTitleProcess = function(theItem) {
+    if(theItem.level === ITEM_LEVEL_FIRST) {
+        theItem.title = '# ' + theItem.title;
+    }else if(theItem.level === ITEM_LEVEL_SECOND) {
+        theItem.title = '## ' + theItem.title;
+    }
+};
+
+var metricUrlProcess = function(theItem) {
+    if(theItem.url) {
+        theItem.url = theItem.url.replace(fromRegExp, 'from=' + defaultMetricFrom).replace(toRegExp, 'to=' + defaultMetricTo);
+    }
 };
 
 var eProcessPopTip = $('process-tip');
@@ -252,14 +267,19 @@ var showProcessTip = function(tip) {
     eProcessPopTip.innerHTML = tip;
 };
 
-chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCaptureConfig'], function(data) {
-    currMetricFrom = data.metricBeginTimestamp ? data.metricBeginTimestamp : currMetricFrom;
-    currMetricTo = data.metricEndTimestamp ? data.metricEndTimestamp : currMetricTo;
-    if(data.metricCaptureConfig) {
-        currMetricReportCfg = typeof data.metricCaptureConfig === 'string' ? JSON.parse(data.metricCaptureConfig) : data.metricCaptureConfig;
+chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCaptureConfig', 'metricPageLoadingTime'], function(data) {
+    console.log('now data is ' + JSON.stringify(data));
+    defaultMetricFrom = data.metricBeginTimestamp ? data.metricBeginTimestamp : defaultMetricFrom;
+    defaultMetricTo = data.metricEndTimestamp ? data.metricEndTimestamp : defaultMetricTo;
+    defaultPageLoadingTime = data.metricPageLoadingTime ? data.metricPageLoadingTime : defaultPageLoadingTime;
+    if(defaultPageLoadingTime < 5000) {
+        defaultPageLoadingTime = 5000;
     }
+    currMetricReportCfg = data.metricCaptureConfig ? JSON.parse(data.metricCaptureConfig) : data.metricCaptureConfig;
 
-    metricUrlProcess();
+    console.log('now defaultPageLoadingTime is ' + defaultPageLoadingTime);
+
+    metricCfgProcess();
     metricItemProcessGo();
 });
 

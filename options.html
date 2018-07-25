@@ -23,17 +23,23 @@
         <div>
             <label for="begin-time">begin time:</label>
             <input type="text" id="begin-time" name="begin-time" minlength="13" maxlength="13"
-                   placeholder="timestamp, milliseconds"/>
+                   placeholder="timestamp, milliseconds, default is 7 days ago" style="width: 30%"/>
 
             <label for="end-time" style="margin-left: 30px">end time:</label>
             <input type="text" id="end-time" name="end-time" minlength="13" maxlength="13"
-                   placeholder="timestamp, milliseconds"/>
+                   placeholder="timestamp, milliseconds, default is now" style="width: 30%"/>
+        </div>
+
+        <div>
+            <label for="begin-time">loading time:</label>
+            <input type="text" id="loading-time" name="loading-time" style="width: 30%"
+                   placeholder="single page loading time, milliseconds, default is 30000"/>
         </div>
 
         <div style="margin-top: 10px">
             <label for="capture-config">capture config:</label>
             <br/>
-            <textarea id="capture-config" name="capture-config" placeholder="json format..." cols="100%" rows="30"></textarea>
+            <textarea id="capture-config" name="capture-config" placeholder="json format..." style="width: 100%" rows="30"></textarea>
         </div>
     </fieldset>
 
