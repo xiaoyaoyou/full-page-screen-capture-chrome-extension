@@ -27,7 +27,7 @@ var MetricReportItem = {
 const ITEM_LEVEL_FIRST = 1;
 const ITEM_LEVEL_SECOND = 2;
 
-var skeleton = [
+var currMetricReportCfg = [
     MetricReportItem.createNew(1, '总结', ''),
     MetricReportItem.createNew(1, '业务metrics', ''),
     MetricReportItem.createNew(2, '微信', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-wei-xin?from=1531670400000&orgId=11&refresh=5s&to=1532275199999'),
@@ -36,6 +36,10 @@ var skeleton = [
 
 var itemProcessIndex = 0;
 var metricReport = '';
+var fromRegExp = new RegExp(/from=[^&]+/, 'i');
+var toRegExp = new RegExp(/to=[^&]+/, 'i');
+var currMetricFrom = 'now-7d';
+var currMetricTo = 'now';
 //
 // Utility methods
 //
@@ -113,7 +117,7 @@ function _displayCapture(filenames, index) {
                     metricReport += '图片路径: ' + theImgFileName + '\n';
                     itemProcessIndex ++;
                     metricReport += '\n';
-                    progress(itemProcessIndex / skeleton.length);
+                    progress(itemProcessIndex / currMetricReportCfg.length);
                     metricItemProcessGo();
                 });
             }
@@ -184,8 +188,8 @@ var doMetricItemProcess = function(metricReportItem) {
 };
 
 var metricItemProcessGo = function() {
-    while (itemProcessIndex < skeleton.length) {
-        let theItem = skeleton[itemProcessIndex];
+    while (itemProcessIndex < currMetricReportCfg.length) {
+        let theItem = currMetricReportCfg[itemProcessIndex];
         metricReport += theItem.title + (theItem.level === ITEM_LEVEL_FIRST ? '\n' : '');
         if(theItem.url) {
             metricReport += '(' + theItem.url + ')' + '\n';
@@ -197,21 +201,32 @@ var metricItemProcessGo = function() {
         }
     }
 
-    if(itemProcessIndex >= skeleton.length) {
+    if(itemProcessIndex >= currMetricReportCfg.length) {
         show('metric-container');
         $('metric-result').value = metricReport;
         console.log('metricReport is ' + metricReport);
     }
 };
 
+var metricUrlProcess = function() {
+    currMetricReportCfg.forEach(function(i) {
+        if(i && i.url) {
+            i.url = i.url.replace(fromRegExp, 'from=' + currMetricFrom).replace(toRegExp, 'to=' + currMetricTo);
+        }
+    })
+};
+
 chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCaptureConfig'], function(data) {
-    console.log('data is ' + JSON.stringify(data));
+    currMetricFrom = data.metricBeginTimestamp ? data.metricBeginTimestamp : currMetricFrom;
+    currMetricTo = data.metricEndTimestamp ? data.metricEndTimestamp : currMetricTo;
     if(data.metricCaptureConfig) {
-        skeleton = data.metricCaptureConfig;
+        currMetricReportCfg = typeof data.metricCaptureConfig === 'string' ? JSON.parse(data.metricCaptureConfig) : data.metricCaptureConfig;
     }
 
+    metricUrlProcess();
     metricItemProcessGo();
 });
+
 
 
 
