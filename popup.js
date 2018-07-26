@@ -88,7 +88,7 @@ function getFilename(contentURL) {
     //    name = '';
     //}
     //return 'screencapture' + name + '-' + Date.now() + '.png';
-    return 'metric-img-' + Date.now() + '-' + itemProcessIndex + '.png';
+    return 'metric-img-' + itemProcessIndex + '.png';
 }
 
 
@@ -137,14 +137,17 @@ function _displayCapture(filenames, index) {
             index: (currentTab.incognito ? 0 : currentTab.index) + 1 + index
         }, function(theTab) {
             if(last) {
-                chrome.downloads.download({url: theImgFileName, filename: 'metrics-biz-img\\' + Date.now() + '.png', conflictAction: 'overwrite'}, function(downloadId){
+                let pureFileNameArray = theImgFileName.split(/\//);
+                let pureFileName = pureFileNameArray[pureFileNameArray.length - 1];
+                let fileAbsolutePath = 'metrics-biz-img\\' + new Date().toJSON().slice(0,10) + '\\' + pureFileName;
+                chrome.downloads.download({url: theImgFileName, filename: fileAbsolutePath, conflictAction: 'overwrite'}, function(downloadId){
                     setTimeout(function() {
                         chrome.tabs.remove(theTab.id, function() {
                             //console.log('remove tab , tab id is ' + theTab.id);
                         });
                     }, defaultPageLoadingTime <= 5000 ? (defaultPageLoadingTime - 2000) : 5000);
 
-                    metricReport += '图片路径: ' + theImgFileName + '\n';
+                    metricReport += '图片名称: ' + pureFileName + '\n';
                     itemProcessIndex ++;
                     metricReport += '\n';
                     progress(itemProcessIndex / currMetricReportCfg.length);
