@@ -136,8 +136,6 @@ function getPositions(callback) {
             // In case the below callback never returns, cleanup
             var cleanUpTimeout = window.setTimeout(cleanUp, 1250);
 
-            console.log('processArrangements, data is ' + JSON.stringify(data));
-
             chrome.runtime.sendMessage(data, function(captured) {
                 window.clearTimeout(cleanUpTimeout);
 

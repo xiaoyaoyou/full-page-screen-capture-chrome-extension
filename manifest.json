@@ -1,5 +1,5 @@
 {
-  "name": "create metric report",
+  "name": "metric reporter",
   "version": "1.0.1",
   "manifest_version": 2,
   "description": "create metric report!",

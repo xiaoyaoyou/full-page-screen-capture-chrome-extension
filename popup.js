@@ -75,19 +75,20 @@ function show(id) { $(id).style.display = 'block'; }
 function hide(id) { $(id).style.display = 'none'; }
 
 function getFilename(contentURL) {
-    var name = contentURL.split('?')[0].split('#')[0];
-    if (name) {
-        name = name
-            .replace(/^https?:\/\//, '')
-            .replace(/[^A-z0-9]+/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^[_\-]+/, '')
-            .replace(/[_\-]+$/, '');
-        name = '-' + name;
-    } else {
-        name = '';
-    }
-    return 'screencapture' + name + '-' + Date.now() + '.png';
+    //var name = contentURL.split('?')[0].split('#')[0];
+    //if (name) {
+    //    name = name
+    //        .replace(/^https?:\/\//, '')
+    //        .replace(/[^A-z0-9]+/g, '-')
+    //        .replace(/-+/g, '-')
+    //        .replace(/^[_\-]+/, '')
+    //        .replace(/[_\-]+$/, '');
+    //    name = '-' + name;
+    //} else {
+    //    name = '';
+    //}
+    //return 'screencapture' + name + '-' + Date.now() + '.png';
+    return 'metric-img-' + Date.now() + '-' + itemProcessIndex + '.png';
 }
 
 
@@ -139,7 +140,7 @@ function _displayCapture(filenames, index) {
                 chrome.downloads.download({url: theImgFileName, filename: 'metrics-biz-img\\' + Date.now() + '.png', conflictAction: 'overwrite'}, function(downloadId){
                     setTimeout(function() {
                         chrome.tabs.remove(theTab.id, function() {
-                            console.log('remove tab , tab id is ' + theTab.id);
+                            //console.log('remove tab , tab id is ' + theTab.id);
                         });
                     }, defaultPageLoadingTime <= 5000 ? (defaultPageLoadingTime - 2000) : 5000);
 
@@ -212,7 +213,7 @@ var doMetricItemProcess = function(metricReportItem) {
             setTimeout(function() {
                 doTabCapture();
             }, defaultPageLoadingTime);
-            showProcessTip('waiting the page of ' + metricReportItem.url + ' loading, it should consume ' + defaultPageLoadingTime / 1000 + 'S');
+            showProcessTip('waiting the page of [' + metricReportItem.url + '] for loading, it will take ' + defaultPageLoadingTime / 1000 + ' seconds');
         });
     });
 };
