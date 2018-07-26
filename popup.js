@@ -30,7 +30,7 @@ const ITEM_LEVEL_SECOND = 2;
 var currMetricReportCfg = [
     MetricReportItem.createNew(1, '总结', ''),
     MetricReportItem.createNew(1, '业务metrics', ''),
-    MetricReportItem.createNew(2, '微信', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-wei-xin?from=1531670400000&orgId=11&refresh=5s&to=1532275199999'),
+    MetricReportItem.createNew(2, '微信', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-wei-xin?from=1531670400000&orgId=11&refresh=60s&to=1532275199999'),
     MetricReportItem.createNew(2, '短信', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-duan-xin?orgId=11&from=1531670400000&to=1532275199999'),
     MetricReportItem.createNew(2, '邮件', 'http://metrics-base.intra.yeshj.com/dashboard/db/xiao-xi-zhong-xin-ye-wu-shu-ju-you-jian?refresh=15m&orgId=11&from=1531670400000&to=1532275199999'),
     MetricReportItem.createNew(1, '机器（应用、中间件、数据库）\n 机器负载 \n CPU 使用率 \n 内存使用率 \n 磁盘使用率 \n网络流量', ''),
@@ -44,12 +44,12 @@ var currMetricReportCfg = [
     MetricReportItem.createNew(1, '网关（API Gateway）', ''),
     MetricReportItem.createNew(2, '周期内站点访问量，状态码数量，超时数据', 'http://elk.yeshj.com/#dashboard/temp/AWTBkff2ADTX0K9c8kx2'),
     MetricReportItem.createNew(2, 'API 调用日志 \n * n 天内每天总数据情况以及 error, warn, info 数据占比 \n * error 排行 top 7 \n * warn 排行 top 7 \n 7 天内每天总数据情况以及 error, warn, info 数据占比', 'http://elk.yeshj.com/#dashboard/temp/AWTBkymRADTX0K9c8k8k'),
-    MetricReportItem.createNew(2, 'error 排行 top 7', 'ttp://elk.yeshj.com/#dashboard/temp/AWTBk-jYADTX0K9c8lCu'),
-    MetricReportItem.createNew(1, 'Redis', 'http://metrics-base.intra.yeshj.com/dashboard/db/shuang-zhong-xin-redis?refresh=5s&orgId=1&from=now-7d&to=now&var-host=redis-message-base.intra.yeshj.com'),
+    MetricReportItem.createNew(2, 'error 排行 top 7', 'http://elk.yeshj.com/#dashboard/temp/AWTBk-jYADTX0K9c8lCu'),
+    MetricReportItem.createNew(1, 'Redis', 'http://metrics-base.intra.yeshj.com/dashboard/db/shuang-zhong-xin-redis?refresh=60s&orgId=1&from=now-7d&to=now&var-host=redis-message-base.intra.yeshj.com'),
     MetricReportItem.createNew(1, 'MQ', ''),
-    MetricReportItem.createNew(2, '微信', 'http://metrics-base.intra.yeshj.com/dashboard/db/rabbitmq-notifycenter-queue?refresh=30s&orgId=1&from=1531670400000&to=1532275199999&var-host=All&var-vhost=All&var-queue=base.notify.wechat.applet.q&var-queue=base.notify.wechat.group.q&var-queue=base.notify.wechat.qq.q&var-queue=base.notify.wechat.v1.q&var-queue=base.notify.wechat.v2.q'),
-    MetricReportItem.createNew(2, '短信', 'http://metrics-base.intra.yeshj.com/dashboard/db/rabbitmq-notifycenter-queue?refresh=30s&orgId=1&var-host=All&var-vhost=All&var-queue=base.notify.sms.high.q&var-queue=base.notify.sms.low.q&var-queue=base.notify.sms.medium.q&from=1531670400000&to=1532275199999'),
-    MetricReportItem.createNew(2, '其它', 'http://metrics-base.intra.yeshj.com/dashboard/db/rabbitmq-notifycenter-queue?refresh=30s&orgId=1&from=1531670400000&to=1532275199999&var-host=All&var-vhost=All&var-queue=base.notify.push.delay.q&var-queue=base.notify.push.javaapp.q&var-queue=base.notify.push.javacc.q&var-queue=base.notify.push.javatemplate.q&var-queue=base.notify.push.msgcache.q&var-queue=base.postoffice.multi.msg.push.q&var-queue=mail.exchange.q&var-queue=mail.normal.q&var-queue=mail.postfix.q'),
+    MetricReportItem.createNew(2, '微信', 'http://metrics-base.intra.yeshj.com/dashboard/db/rabbitmq-notifycenter-queue?refresh=60s&orgId=1&from=1531670400000&to=1532275199999&var-host=All&var-vhost=All&var-queue=base.notify.wechat.applet.q&var-queue=base.notify.wechat.group.q&var-queue=base.notify.wechat.qq.q&var-queue=base.notify.wechat.v1.q&var-queue=base.notify.wechat.v2.q'),
+    MetricReportItem.createNew(2, '短信', 'http://metrics-base.intra.yeshj.com/dashboard/db/rabbitmq-notifycenter-queue?refresh=60s&orgId=1&var-host=All&var-vhost=All&var-queue=base.notify.sms.high.q&var-queue=base.notify.sms.low.q&var-queue=base.notify.sms.medium.q&from=1531670400000&to=1532275199999'),
+    MetricReportItem.createNew(2, '其它', 'http://metrics-base.intra.yeshj.com/dashboard/db/rabbitmq-notifycenter-queue?refresh=60s&orgId=1&from=1531670400000&to=1532275199999&var-host=All&var-vhost=All&var-queue=base.notify.push.delay.q&var-queue=base.notify.push.javaapp.q&var-queue=base.notify.push.javacc.q&var-queue=base.notify.push.javatemplate.q&var-queue=base.notify.push.msgcache.q&var-queue=base.postoffice.multi.msg.push.q&var-queue=mail.exchange.q&var-queue=mail.normal.q&var-queue=mail.postfix.q'),
     MetricReportItem.createNew(1, 'JVM', ''),
     MetricReportItem.createNew(2, '短信', 'http://metrics-base.intra.yeshj.com/dashboard/db/jvm-notifycenter-sms-job-v170911-1624?from=1531670400000&orgId=2&refresh=1m&to=1532275199999'),
     MetricReportItem.createNew(2, '模版消息', 'http://metrics-base.intra.yeshj.com/dashboard/db/jvm-notifycenter-template-job-v170911-1624?refresh=1m&orgId=2&from=1531670400000&to=1532275199999'),
@@ -213,7 +213,7 @@ var doMetricItemProcess = function(metricReportItem) {
             setTimeout(function() {
                 doTabCapture();
             }, defaultPageLoadingTime);
-            showProcessTip('waiting the page of [' + metricReportItem.url + '] for loading, it will take ' + defaultPageLoadingTime / 1000 + ' seconds');
+            showProcessTip('waiting for the page of [' + metricReportItem.url + '] loading, it will take ' + defaultPageLoadingTime / 1000 + ' seconds');
         });
     });
 };
@@ -275,7 +275,7 @@ chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCa
     if(defaultPageLoadingTime < 5000) {
         defaultPageLoadingTime = 5000;
     }
-    currMetricReportCfg = data.metricCaptureConfig ? JSON.parse(data.metricCaptureConfig) : data.metricCaptureConfig;
+    currMetricReportCfg = data.metricCaptureConfig ? JSON.parse(data.metricCaptureConfig) : currMetricReportCfg;
 
     metricCfgProcess();
     metricItemProcessGo();
