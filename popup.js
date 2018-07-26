@@ -139,7 +139,7 @@ function _displayCapture(filenames, index) {
             if(last) {
                 let pureFileNameArray = theImgFileName.split(/\//);
                 let pureFileName = pureFileNameArray[pureFileNameArray.length - 1];
-                let fileAbsolutePath = 'metrics-biz-img\\' + new Date().toJSON().slice(0,10) + '\\' + pureFileName;
+                let fileAbsolutePath = 'metrics-biz-img\/' + new Date().toJSON().slice(0,10) + '\/' + pureFileName;
                 chrome.downloads.download({url: theImgFileName, filename: fileAbsolutePath, conflictAction: 'overwrite'}, function(downloadId){
                     setTimeout(function() {
                         chrome.tabs.remove(theTab.id, function() {
