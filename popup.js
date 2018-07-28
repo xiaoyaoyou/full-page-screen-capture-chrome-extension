@@ -22,7 +22,7 @@ var fromRegExp = new RegExp(/from=[^&]+/, 'i');
 var toRegExp = new RegExp(/to=[^&]+/, 'i');
 var defaultMetricFrom = 'now-7d';
 var defaultMetricTo = 'now';
-var defaultPageLoadingTime = 30000;
+var defaultPageLoadingTime = 10000;
 //
 // Utility methods
 //
