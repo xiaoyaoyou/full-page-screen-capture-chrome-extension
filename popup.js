@@ -172,10 +172,11 @@ var doTabCapture = function() {
 var doMetricItemProcess = function(metricReportItem) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.update(tabs[0].id, {active: true, url: metricReportItem.url}, function(newTab) {
+            let thePageLoadingTime = metricReportItem.loadingTime ? metricReportItem.loadingTime : defaultPageLoadingTime;
             setTimeout(function() {
                 doTabCapture();
-            }, defaultPageLoadingTime);
-            showProcessTip('waiting for the page of [' + metricReportItem.url + '] loading, it will take ' + defaultPageLoadingTime / 1000 + ' seconds');
+            }, thePageLoadingTime);
+            showProcessTip('waiting for the page of [' + metricReportItem.url + '] loading, it will take ' + thePageLoadingTime / 1000 + ' seconds');
         });
     });
 };
