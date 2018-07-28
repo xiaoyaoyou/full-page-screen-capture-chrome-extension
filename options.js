@@ -10,7 +10,7 @@ var eLoadingTime = document.getElementById('loading-time');
 chrome.storage.sync.get(['metricBeginTimestamp', 'metricEndTimestamp', 'metricCaptureConfig', 'metricPageLoadingTime'], function(data) {
     eBeginTime.value = data.metricBeginTimestamp ? data.metricBeginTimestamp : '';
     eEndTime.value = data.metricEndTimestamp ? data.metricEndTimestamp : '';
-    eCaptureConfig.value = data.metricCaptureConfig ? data.metricCaptureConfig : '';
+    eCaptureConfig.value = data.metricCaptureConfig;
     eLoadingTime.value = data.metricPageLoadingTime ? data.metricPageLoadingTime : '';
 });
 
@@ -21,6 +21,6 @@ function configConfirm() {
     let pageLoadingTime = eLoadingTime.value.trim();
 
     chrome.storage.sync.set({metricBeginTimestamp: beginTimestamp, metricEndTimestamp: endTimestamp,
-        metricCaptureConfig: captureConfig, metricPageLoadingTime: pageLoadingTime}, function() {
-    })
+        metricPageLoadingTime: pageLoadingTime, metricCaptureConfig: captureConfig}, function() {
+    });
 }

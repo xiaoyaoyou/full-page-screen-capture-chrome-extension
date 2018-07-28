@@ -53,13 +53,14 @@ window.CaptureAPI = (function() {
                         // given device mode emulation or zooming, we may end up with
                         // a different sized image than expected, so let's adjust to
                         // match it!
-                        if (data.windowWidth !== image.width) {
-                            var scale = image.width / data.windowWidth;
-                            data.x *= scale;
-                            data.y *= scale;
-                            data.totalWidth *= scale;
-                            data.totalHeight *= scale;
-                        }
+                        //同一tab不停刷新的时候，可能会导致新创建的image的width正确(小于实际的大小)，最终导致截出来的图片缺失，考虑到现在的网页基本都是自适应的，不会存在横向拖动的情况，所以暂时去除该功能
+                        //if (data.windowWidth !== image.width) {
+                        //    var scale = image.width / data.windowWidth;
+                        //    data.x *= scale;
+                        //    data.y *= scale;
+                        //    data.totalWidth *= scale;
+                        //    data.totalHeight *= scale;
+                        //}
 
                         // lazy initialization of screenshot canvases (since we need to wait
                         // for actual image size)
@@ -269,9 +270,7 @@ window.CaptureAPI = (function() {
                 progress(0);
 
                 initiateCapture(tab, function() {
-                    setTimeout(function() {
-                        callback(getBlobs(screenshots));
-                    }, 1000);
+                    callback(getBlobs(screenshots));
                 });
             }
         });
@@ -300,7 +299,6 @@ window.CaptureAPI = (function() {
             })();
         }, errback, progress, splitnotifier);
     }
-
 
     return {
         captureToBlobs: captureToBlobs,
