@@ -155,7 +155,7 @@ function splitnotifier() {
 //        errorHandler, progress, splitnotifier);
 //});
 
-var doTabCapture = function() {
+var doTabCapture = function(adjustImgSize) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var tab = tabs[0];
         currentTab = tab; // used in later calls to get tab info
@@ -165,7 +165,7 @@ var doTabCapture = function() {
         console.log('---- tab capture begin');
 
         CaptureAPI.captureToFiles(tab, filename, displayCaptures,
-            errorHandler, null, splitnotifier);
+            errorHandler, null, splitnotifier, adjustImgSize);
     });
 };
 
@@ -174,7 +174,7 @@ var doMetricItemProcess = function(metricReportItem) {
         chrome.tabs.update(tabs[0].id, {active: true, url: metricReportItem.url}, function(newTab) {
             let thePageLoadingTime = metricReportItem.loadingTime ? metricReportItem.loadingTime : defaultPageLoadingTime;
             setTimeout(function() {
-                doTabCapture();
+                doTabCapture(metricReportItem.adjustImgSize);
             }, thePageLoadingTime);
             showProcessTip('waiting for the page of [' + metricReportItem.url + '] loading, it will take ' + thePageLoadingTime / 1000 + ' seconds');
         });

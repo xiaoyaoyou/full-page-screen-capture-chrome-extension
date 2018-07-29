@@ -42,7 +42,7 @@ window.CaptureAPI = (function() {
     }
 
 
-    function capture(data, screenshots, sendResponse, splitnotifier) {
+    function capture(data, screenshots, sendResponse, splitnotifier, adjustImgSize) {
         chrome.tabs.captureVisibleTab(
             null, {format: 'png', quality: 100}, function(dataURI) {
                 if (dataURI) {
@@ -53,14 +53,15 @@ window.CaptureAPI = (function() {
                         // given device mode emulation or zooming, we may end up with
                         // a different sized image than expected, so let's adjust to
                         // match it!
-                        //同一tab不停刷新的时候，可能会导致新创建的image的width正确(小于实际的大小)，最终导致截出来的图片缺失，考虑到现在的网页基本都是自适应的，不会存在横向拖动的情况，所以暂时去除该功能
-                        //if (data.windowWidth !== image.width) {
-                        //    var scale = image.width / data.windowWidth;
-                        //    data.x *= scale;
-                        //    data.y *= scale;
-                        //    data.totalWidth *= scale;
-                        //    data.totalHeight *= scale;
-                        //}
+                        console.log('image.onload, data: ' + JSON.stringify(data));
+                        console.log('image.onload, adjustImgSize: ' + adjustImgSize + 'image.width: ' + image.width + ', data.windowWidth: ' + data.windowWidth);
+                        if (adjustImgSize && data.windowWidth !== image.width) {
+                            var scale = image.width / data.windowWidth;
+                            data.x *= scale;
+                            data.y *= scale;
+                            data.totalWidth *= scale;
+                            data.totalHeight *= scale;
+                        }
 
                         // lazy initialization of screenshot canvases (since we need to wait
                         // for actual image size)
@@ -202,7 +203,7 @@ window.CaptureAPI = (function() {
         }
 
         // come up with file-system size with a little buffer
-        var size = blob.size + (1024 / 2);
+        var size = blob ? (blob.size + (1024 / 2)) : 1024 * 5;
 
         // create a blob for writing to a file
         var reqFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
@@ -227,7 +228,7 @@ window.CaptureAPI = (function() {
     }
 
 
-    function captureToBlobs(tab, callback, errback, progress, splitnotifier) {
+    function captureToBlobs(tab, callback, errback, progress, splitnotifier, adjustImgSize) {
         var loaded = false,
             screenshots = [],
             timeout = 6000,
@@ -246,7 +247,7 @@ window.CaptureAPI = (function() {
         chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if (request.msg === 'capture') {
                 progress(request.complete);
-                capture(request, screenshots, sendResponse, splitnotifier);
+                capture(request, screenshots, sendResponse, splitnotifier, adjustImgSize);
 
                 // https://developer.chrome.com/extensions/messaging#simple
                 //
@@ -284,7 +285,7 @@ window.CaptureAPI = (function() {
     }
 
 
-    function captureToFiles(tab, filename, callback, errback, progress, splitnotifier) {
+    function captureToFiles(tab, filename, callback, errback, progress, splitnotifier, adjustImgSize) {
         captureToBlobs(tab, function(blobs) {
             var i = 0,
                 len = blobs.length,
@@ -297,7 +298,7 @@ window.CaptureAPI = (function() {
                     i >= len ? callback(filenames) : doNext();
                 }, errback);
             })();
-        }, errback, progress, splitnotifier);
+        }, errback, progress, splitnotifier, adjustImgSize);
     }
 
     return {
