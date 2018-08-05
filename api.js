@@ -190,6 +190,11 @@ window.CaptureAPI = (function() {
 
 
     function saveBlob(blob, filename, index, callback, errback) {
+        if(!blob) {
+            console.log('blob is ' + blob + ', filename is ' + filename + ', index is ' + index);
+            return;
+        }
+
         filename = _addFilenameSuffix(filename, index);
 
         function onwriteend() {
@@ -203,7 +208,7 @@ window.CaptureAPI = (function() {
         }
 
         // come up with file-system size with a little buffer
-        var size = blob ? (blob.size + (1024 / 2)) : 1024 * 5;
+        var size = blob.size + (1024 / 2);
 
         // create a blob for writing to a file
         var reqFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
